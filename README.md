@@ -49,13 +49,13 @@ Plataforma completa para gestión de stablecoins con inteligencia artificial loc
 ![Open WebUI Dashboard](https://github.com/open-webui/open-webui/raw/main/demo.png)
 
 ### 🤖 DeepSeek R1 14B en acción
-![DeepSeek Demo](https://icon.icepanel.io/Technology/svg/JavaScript.svg)
+![DeepSeek Demo](https://icon.icepanel.io/Technology/svg/JavaScript.svg=250x250)
 
 ### 📱 Frontend Expo - App Multiplataforma
-![Expo App](https://icon.icepanel.io/Technology/svg/Android.svg)
+![Expo App](https://icon.icepanel.io/Technology/svg/Android.svg=250x250)
 
 ### 🐳 Arquitectura Docker completa
-![Docker Architecture](https://icon.icepanel.io/Technology/svg/Docker.svg)
+![Docker Architecture](https://icon.icepanel.io/Technology/svg/Docker.svg=250x250)
 
 ---
 
