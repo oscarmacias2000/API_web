@@ -1,0 +1,727 @@
+// src/screens/Dashboard.js - Versión con imágenes en los cards
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  StyleSheet,
+  Switch,
+  Alert,
+  Dimensions
+} from 'react-native';
+import { useApp } from '../context/AppContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CommonActions } from '@react-navigation/native';
+
+const { width } = Dimensions.get('window');
+const CARD_WIDTH = (width - 40) / 4;
+
+export default function Dashboard({ navigation , code, language = 'javascript', showLineNumbers = true}) {
+  const { user, logout } = useApp();
+  const [message, setMessage] = useState('');
+  const [notifications, setNotifications] = useState(true);
+  const [copied,setCopied]=React.useState(false);
+
+  /*const handleCopy = ()=>{
+    console.log('Copiado', code);
+    setCopied(true)
+    setTimeout(()=> setCopied(false), 2000);
+  }
+
+    // Dividir el código en líneas
+  const lines = code.split('\n');
+*/
+
+  const handleLogout = async() => {
+    console.log('Rutas disponibles:', navigation.getState()?.routes.map(r => r.name));
+    console.log('1️⃣ Botón presionado');
+    console.log("Limpiando storage...")
+
+    console.log('3️⃣ Storage limpiado, navegando...');
+  
+
+   await AsyncStorage.multiRemove(['@auth_token', '@user']);
+   await logout(); // Esto debe setUser(null)
+  // La navegación cambiará automáticamente por App.js
+ 
+    console.log('4️⃣ Navegación ejecutada');
+  };
+
+  setTimeout(() =>{
+      handleLogout
+  }, 2000);
+  return (
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Header */}
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <Text style={styles.logo}>Typefish</Text>
+          <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton}>
+            <Text style={styles.menuIcon}>☰</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.navScroll}>
+          <View style={styles.navContainer}>
+            {['Inicio', 'Casos de uso', 'Precios', 'Blog', 'Habilidades', 'Recursos', 'Empresas'].map((item, idx) => (
+              <TouchableOpacity key={idx} style={styles.navItem}>
+                <Text style={styles.navText}>{item}</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity style={styles.loginButton}>
+              <Text style={styles.loginText}>Iniciar sesión</Text>
+            </TouchableOpacity>
+    
+            <TouchableOpacity style={styles.getStartedButton}>
+              <Text style={styles.getStartedText}>Obtener OpenClaw</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.getStartedButton} onPress={handleLogout}>
+              <Text style={styles.logoutText}>Cerrar sesión</Text>
+            </TouchableOpacity>
+           </View>
+           
+        </ScrollView>
+      </View>
+      
+
+      {/* AI Secret Badge */}
+      <View style={styles.aiBadgeContainer}>
+        <View style={styles.aiBadge}>
+          <Text style={styles.aiBadgeText}>🤖 AI SECRET</Text>
+          <Text style={styles.aiBadgeSubtext}>Selección del editor</Text>
+        </View>
+      </View>
+
+      {/* Hero Section */}
+      <View style={styles.heroSection}>
+        <Text style={styles.heroTitle}>
+          <Text style={styles.heroHighlight}>Typefish</Text>
+        </Text>
+        <Text style={styles.heroSubtitle}>
+          Listo para usted
+        </Text>
+        <Text style={styles.heroDescription}>
+          Un asistente personal de IA con el que todos están obsesionados —{' '}
+          <Text style={styles.boldText}>funciona 24/7, sin configuración necesaria.</Text>
+        </Text>
+        
+        <TouchableOpacity style={styles.runButton}>
+          <Text style={styles.runButtonText}>Ejecutar Typefish</Text>
+        </TouchableOpacity>
+        
+        <Text style={styles.runSubtext}>
+          Ejecute Typefish al instante. Cancele en cualquier momento.
+        </Text>
+    <View style={{ marginVertical: 16 }}>
+  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#1F2937' }}>
+      use <Text style={{color: 'white'}}>npm install</Text> to use this API
+    </Text>
+    <TouchableOpacity 
+      style={{ backgroundColor: '#e5e5e5', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 6 }}
+      onPress={() => console.log('Copiado!')}
+    >
+      <Text style={{ fontSize: 12 }}>📋 Copiar</Text>
+    </TouchableOpacity>
+  </View>
+  
+  {/* Bloque de código */}
+  <View style={{ 
+    backgroundColor: '#1E1E1E', 
+    padding: 16, 
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#333',
+  }}>
+    <Text style={{ color: '#C792EA', fontFamily: 'monospace', fontSize: 13, marginBottom: 8 }}>
+      {`async function registerUser() {`}
+    </Text>
+    <Text style={{ color: '#D4D4D4', fontFamily: 'monospace', fontSize: 13, marginLeft: 12, marginBottom: 4 }}>
+      {`const response = await fetch('/api/auth/register', {`}
+    </Text>
+    <Text style={{ color: '#D4D4D4', fontFamily: 'monospace', fontSize: 13, marginLeft: 24, marginBottom: 4 }}>
+      {`method: 'POST',`}
+    </Text>
+    <Text style={{ color: '#D4D4D4', fontFamily: 'monospace', fontSize: 13, marginLeft: 24, marginBottom: 4 }}>
+      {`headers: { 'Content-Type': 'application/json' },`}
+    </Text>
+    <Text style={{ color: '#D4D4D4', fontFamily: 'monospace', fontSize: 13, marginLeft: 24, marginBottom: 8 }}>
+      {`body: JSON.stringify({ email, password })`}
+    </Text>
+    <Text style={{ color: '#D4D4D4', fontFamily: 'monospace', fontSize: 13, marginLeft: 12, marginBottom: 4 }}>
+      {`});`}
+    </Text>
+    <Text style={{ color: '#C792EA', fontFamily: 'monospace', fontSize: 13 }}>
+      {`}`}
+    </Text>
+  </View>
+</View>
+
+
+<View style={{ marginVertical: 16 }}>
+  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#1F2937' }}>
+      use <Text style={{color: 'white'}}>npm install</Text> to use this API
+    </Text>
+    <TouchableOpacity 
+      style={{ backgroundColor: '#e5e5e5', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 6 }}
+      onPress={() => console.log('Copiado!')}
+    >
+      <Text style={{ fontSize: 12 }}>📋 Copiar</Text>
+    </TouchableOpacity>
+  </View>
+  
+  {/* Bloque de código */}
+  <View style={{ 
+    backgroundColor: '#1E1E1E', 
+    padding: 16, 
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#333',
+  }}>
+    <Text style={{ color: '#C792EA', fontFamily: 'monospace', fontSize: 13, marginBottom: 8 }}>
+      {`async function registerUser() {`}
+    </Text>
+    <Text style={{ color: '#D4D4D4', fontFamily: 'monospace', fontSize: 13, marginLeft: 12, marginBottom: 4 }}>
+      {`const response = await fetch('/api/auth/register', {`}
+    </Text>
+    <Text style={{ color: '#D4D4D4', fontFamily: 'monospace', fontSize: 13, marginLeft: 24, marginBottom: 4 }}>
+      {`method: 'POST',`}
+    </Text>
+    <Text style={{ color: '#D4D4D4', fontFamily: 'monospace', fontSize: 13, marginLeft: 24, marginBottom: 4 }}>
+      {`headers: { 'Content-Type': 'application/json' },`}
+    </Text>
+    <Text style={{ color: '#D4D4D4', fontFamily: 'monospace', fontSize: 13, marginLeft: 24, marginBottom: 8 }}>
+      {`body: JSON.stringify({ email, password })`}
+    </Text>
+    <Text style={{ color: '#D4D4D4', fontFamily: 'monospace', fontSize: 13, marginLeft: 12, marginBottom: 4 }}>
+      {`});`}
+    </Text>
+    <Text style={{ color: '#C792EA', fontFamily: 'monospace', fontSize: 13 }}>
+      {`}`}
+    </Text>
+  </View>
+</View>
+</View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+
+  
+  //logOUT stylessheet
+   logoutButton: {
+    backgroundColor: '#EF4444',
+    marginHorizontal: 20,
+    marginBottom: 30,
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  logoutText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+     colorText:{
+        color: 'white'
+     },
+
+    container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    gap: 16,
+  },
+  card: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  cardImage: {
+    width: '100%',
+    height: 150,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 8,
+    lineHeight: 28,
+  },
+  cardText: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  button: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    backgroundColor: '#F3F4F6',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+    marginRight: 6,
+  },
+
+
+  container: {
+    flex: 1,
+    backgroundColor: '#324549',
+  },
+
+  // Header
+  header: {
+    backgroundColor: '#324549',
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    color: 'white'
+  },
+  logo: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  menuButton: {
+    padding: 8,
+  },
+  menuIcon: {
+    fontSize: 24,
+    color: '#ffffff',
+  },
+  navScroll: {
+    marginBottom: 16,
+  },
+  navContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  navItem: {
+    paddingVertical: 8,
+  },
+  navText: {
+    fontSize: 14,
+    color: '#ffffff',
+  },
+  loginButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  loginText: {
+    fontSize: 14,
+    color: '#4B5563',
+  },
+  getStartedButton: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  getStartedText: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+
+  // AI Badge
+  aiBadgeContainer: {
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  aiBadge: {
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  aiBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  aiBadgeSubtext: {
+    fontSize: 10,
+    color: '#9CA3AF',
+    marginTop: 2,
+  },
+
+  // Hero
+  heroSection: {
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginTop: 40,
+    marginBottom: 40,
+  },
+  heroTitle: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  heroHighlight: {
+    color: '#10B981',
+  },
+  heroSubtitle: {
+    fontSize: 36,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginTop: 8,
+  },
+  heroDescription: {
+    fontSize: 16,
+    color: '#4B5563',
+    textAlign: 'center',
+    marginTop: 20,
+    lineHeight: 24,
+  },
+  boldText: {
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  runButton: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 30,
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  runButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  runSubtext: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginTop: 16,
+  },
+
+  // Cards Container
+  cardsContainer: {
+    
+    paddingHorizontal: 16,
+    marginBottom: 30,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 16,
+    marginLeft: 4,
+  },
+  cardsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+
+  // Feature Card
+  featureCard: {
+    width: (width - 48) / 2,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+    alignItems: 'center',
+  },
+  cardImageContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  cardImage: {
+   
+  },
+  cardTitle: {
+    fontSize: 50,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  cardDescription: {
+    fontSize: 12,
+    color: '#6B7280',
+    lineHeight: 16,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  cardBadge: {
+    alignSelf: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  cardBadgeText: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+
+  // AI Message
+  aiMessageContainer: {
+    position: 'relative',
+    left: '50%',
+    width: '15%',
+    backgroundColor: '#F9FAFB',
+    marginHorizontal: 20,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 30,
+  },
+  aiMessageHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  aiAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  aiMessageTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    flex: 1,
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#10B98120',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  statusDot: {
+    fontSize: 10,
+    color: '#10B981',
+    marginRight: 4,
+  },
+  statusText: {
+    fontSize: 10,
+    color: '#10B981',
+    fontWeight: '600',
+  },
+  aiMessageBubble: {
+    backgroundColor: '#FFFFFF',
+    padding: 14,
+    borderRadius: 16,
+    borderBottomLeftRadius: 4,
+    marginBottom: 12,
+  },
+  aiMessageText: {
+    fontSize: 14,
+    color: '#1F2937',
+    lineHeight: 20,
+  },
+  userMessageBubble: {
+    backgroundColor: '#10B981',
+    padding: 14,
+    borderRadius: 16,
+    borderBottomRightRadius: 4,
+    marginBottom: 16,
+    alignSelf: 'flex-end',
+    maxWidth: '80%',
+  },
+  userMessageText: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    lineHeight: 20,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  input: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 14,
+    color: '#1F2937',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    maxHeight: 80,
+  },
+  sendButton: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  sendButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+
+  // Notifications
+  notificationsContainer: {
+    width: '40%',
+    paddingHorizontal: 20,
+    marginBottom: 30,
+  },
+  notificationsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  notificationToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  toggleLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  notificationItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    padding: 14,
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+  notificationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 12,
+  },
+  notificationContent: {
+    flex: 1,
+  },
+  notificationText: {
+    fontSize: 14,
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  notificationTime: {
+    fontSize: 10,
+    color: '#9CA3AF',
+  },
+  
+
+
+ fixedFooter: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#F9FAFB',
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  footerText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#10B981',
+  },
+
+
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+ 
+    gap: 8,
+  },
+  card: {
+    width: (Dimensions.get('window').width - 40) / 4,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  cardImage: {
+    width: '100%',
+    height: 100,
+    resizeMode: 'cover',
+  },
+  cardContent: {
+    padding: 6,
+  },
+  cardTitle: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 3,
+  },
+  cardText: {
+    fontSize: 8,
+    color: '#6B7280',
+    lineHeight: 10,
+  },
+  cardFooter: {
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+    backgroundColor: '#F9FAFB',
+  },
+  cardNumber: {
+    fontSize: 9,
+    fontWeight: '600',
+    color: '#10B981',
+  },
+});

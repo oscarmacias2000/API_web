@@ -1,0 +1,73 @@
+#version: '3.8' ya genera warning, se recomienda usar la version 3.9 o superior
+services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+    - "80:80" #exponer el puerto 80 para HTTP
+    - "443:443" #exponer el puerto 443 para HTTPS
+    volumes:
+    - /var/run/docker.sock:/tmp/docker.sock:ro #montar el socket de Docker para que el contenedor pueda comunicarse con el daemon de Docker
+    - ./certs:/etc/nginx/certs #montar el directorio local para almacenar los certificados generados por Let's Encrypt
+    - ./vhost.d:/etc/nginx/vhost.d #montar el directorio local para almacenar las configuraciones de los hosts virtuales
+    - ./html:/usr/share/nginx/html #montar el directorio local para almacenar los archivos HTML que se servirán como respuesta a las solicitudes HTTP
+    networks:
+    - app-network
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro #montar el socket de Docker para que el contenedor pueda comunicarse con el daemon de Docker
+      - ./certs:/etc/nginx/certs #montar el directorio local para almacenar los certificados generados por Let's Encrypt
+      - ./vhost.d:/etc/nginx/vhost.d #montar el directorio local para almacenar las configuraciones de los hosts virtuales
+      - ./html:/usr/share/nginx/html #montar el directorio local para almacenar los archivos HTML que se servirán como respuesta a las solicitudes HTTP
+      - ./acme:/etc/acme.sh #montar el directorio local para almacenar los scripts de acme.sh, que se utilizan para generar y renovar los certificados SSL
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    networks:
+      - app-network
+
+   #services for frontend    
+  frontend:
+    build: .
+    expose:
+      - "80"
+    environment:
+      - API_URL=http://backend:3000 #configurar la URL del backend para que el frontend pueda comunicarse con él  
+    networks:
+      - app-network
+   
+
+   #services for backend
+  backend:
+    build: .
+    ports:
+      - "3002:3002" #exponer el puerto 3002 para que el backend pueda recibir solicitudes HTTP
+    networks:
+      - app-network
+  
+  ollam:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434" #exponer el puerto 11434 para que Ollama pueda recibir solicitudes HTTP-  
+    volumes:
+      - ollama-data:/root/.ollama #montar un volumen para almacenar los datos de Ollama
+    restart: unless-stopped #reiniciar el contenedor automáticamente a menos que se detenga manualmente    
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    ports: 
+      - "3000:8080" #exponer el puerto 7860 para que Open WebUI pueda recibir solicitudes HTTP
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+    volumes:
+      - openwebui_data:/app/backend/data
+    depends_on:
+      - ollama
+    restart: unless-stopped
+volumes:
+  ollama-data:
+  openwebui_data:
+
+networks:
+   app-network:
+     driver: bridge      
