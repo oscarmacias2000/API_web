@@ -21,3 +21,46 @@ Plataforma completa para gestión de stablecoins con inteligencia artificial loc
 - [Contribución](#-contribución)
 
 ## 🏗️ Arquitectura
+
+
+
+## 🛠️ Tecnologías
+
+### Backend
+- **Node.js** + **Express** - API REST
+- **Prisma** - ORM para base de datos
+- **PostgreSQL** / **SQLite** - Base de datos
+- **JWT** - Autenticación
+- **bcryptjs** - Encriptación
+
+### Frontend
+- **React Native** + **Expo** - Desarrollo multiplataforma
+- **React Navigation** - Navegación
+- **Axios** - Cliente HTTP
+- **AsyncStorage** - Almacenamiento local
+
+### IA Local
+- **Ollama** - Servidor de modelos locales
+- **DeepSeek R1:14B** - Modelo de lenguaje (14GB)
+- **Open WebUI** - Interfaz web para IA
+
+### Infraestructura
+- **Docker** + **Docker Compose** - Contenerización
+- **nginx-proxy** - Proxy inverso
+- **Let's Encrypt** - Certificados SSL automáticos
+
+## 📦 Requisitos Previos
+
+```bash
+# Node.js v18+
+node --version
+
+# Docker y Docker Compose
+docker --version
+docker-compose --version
+
+# Expo CLI
+npm install -g expo-cli
+
+# Git
+git --version
